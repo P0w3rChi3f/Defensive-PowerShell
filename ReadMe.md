@@ -48,6 +48,8 @@
             * PowerShell cmdlets that contain the EventLog noun work only on Windows classic event logs such as Application, System, or Security. To get logs that use the Windows Event Log technology in Windows Vista and later Windows versions, use Get-WinEvent.  
     * ***Get-EventLog uses a Win32 API that is deprecated. The results may not be accurate. Use the Get-WinEvent cmdlet instead.***
     * Converting Get-EventLog to Get-WinEvent
+    * install Sysmon with Swift on Security config
+        `.\sysmon.exe -accepteula -i sysmonconfig-export.xml`
 
 ## Overview
 
