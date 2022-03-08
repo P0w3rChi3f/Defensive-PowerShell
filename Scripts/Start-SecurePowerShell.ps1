@@ -1,4 +1,4 @@
-
+# https://www.splunk.com/en_us/blog/security/hunting-for-malicious-powershell-using-script-block-logging.html
 # Working with PowerShellv2
 Get-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2
 Disable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2Root
@@ -51,4 +51,4 @@ function Enable-ModuleLogging
 }
 
 # Enable Module Logging for individual
-(Get-Module <Module-Name>).LogPipelineExecutionDetails = $true
+#(Get-Module <Module-Name>).LogPipelineExecutionDetails = $true
