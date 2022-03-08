@@ -1,5 +1,12 @@
 # Defensive PowerShell Workshop  
 
+Rest my vmnet8 for PowerShell Remoting
+`Get-NetAdapter * | Where-Object {$_.name -like "*vmnet8*"} | disable-NetAdapter`
+Disable RDP  
+`Set-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections -value 1`
+
+
+
 1. Setup and Overview - (60 min)
     * Expectations
         * May not be best tool for the job
@@ -14,6 +21,8 @@
         * `Disable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2Root`
         * `Enable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2Root`
     * Enable PowerShell Logging and transcriptions
+        * `Get-WinEvent -ListProvider * -ErrorAction SilentlyContinue | Where-Object {$_.name -like "*Powershell*"} | select Name`
+        * `Get-WinEvent -ProviderName Microsoft-Windows-PowerShell`
         * `HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging → EnableModuleLogging = 1`
         * `HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging \ModuleNames → * = *`
         * `HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging → EnableScriptBlockLogging = 1`
@@ -50,6 +59,9 @@
     * Converting Get-EventLog to Get-WinEvent
     * install Sysmon with Swift on Security config
         `.\sysmon.exe -accepteula -i sysmonconfig-export.xml`
+    * find network share access
+        eventID 5140 : A network share was accessed
+        EventID 4624 : Logged in users
 
 ## Overview
 
