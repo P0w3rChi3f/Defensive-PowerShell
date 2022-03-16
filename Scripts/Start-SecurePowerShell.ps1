@@ -5,6 +5,9 @@ Disable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2
 Enable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2Root
 
 # Enable Logging
+# Firewall logging
+Local Security Policy -> Windows Defender Firewall and Advanced Security 
+%systemroot%\system32\logfiles\firewall\pfirewall.log
 
 # Check to see if you are already logging
 Get-WinEvent -LogName Microsoft-Windows-PowerShell/Operational
