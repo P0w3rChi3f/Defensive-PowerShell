@@ -4,7 +4,8 @@ Rest my vmnet8 for PowerShell Remoting
 `Get-NetAdapter * | Where-Object {$_.name -like "*vmnet8*"} | disable-NetAdapter`
 Disable RDP  
 `Set-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections -value 1`
-
+Clear logs in pwsh7
+`Import-Module Microsoft.PowerShell.Management -UseWindowsPowerShell Get-EventLog -LogName * | % { Clear-EventLog -LogName $_.log }`
 
 
 1. Setup and Overview - (60 min)
