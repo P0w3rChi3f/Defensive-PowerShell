@@ -7,7 +7,6 @@ Disable RDP
 Clear logs in pwsh7
 `Import-Module Microsoft.PowerShell.Management -UseWindowsPowerShell Get-EventLog -LogName * | % { Clear-EventLog -LogName $_.log }`
 
-
 1. Setup and Overview - (60 min)
     * Expectations
         * May not be best tool for the job
