@@ -24,8 +24,10 @@ Clear logs in pwsh7
         * `Get-WinEvent -ListProvider * -ErrorAction SilentlyContinue | Where-Object {$_.name -like "*Powershell*"} | select Name`
         * `Get-WinEvent -ProviderName Microsoft-Windows-PowerShell`
         * `HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging → EnableModuleLogging = 1`
-        * `HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging \ModuleNames → * = *`
+        * `HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging\ModuleNames → * = *`
         * `HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging → EnableScriptBlockLogging = 1`
+    * secedit [/configure | /analyze | /import | /export | /validate | /generaterollback]
+        * https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/administer-security-policy-settings#bkmk-scmtool
     * DSC (Desired State Configuration)
         * Set up Account Policy
             * Computer Configuration\Windows Settings\Account Policies\Password Policy

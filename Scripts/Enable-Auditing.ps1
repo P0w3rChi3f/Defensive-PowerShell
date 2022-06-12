@@ -3,7 +3,7 @@ Configuration CIS_Windows11_v100 {
         [string[]]$NodeName ='localhost'
         )
 
-    Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
+    Import-DscResource -ModuleName 'PSDscResources'
     Import-DscResource -ModuleName 'AuditPolicyDsc'
     Import-DscResource -ModuleName 'SecurityPolicyDsc'
 
@@ -22,7 +22,7 @@ Configuration CIS_Windows11_v100 {
             # 1.1.5 (L1) Ensure 'Password must meet complexity requirements' is set to 'Enabled'
             Password_must_meet_complexity_requirements  = 'Enabled'
             # 1.1.6 (L1) Ensure 'Relax minimum password length limits' is set to 'Enabled'
-            Relax_minimum_Password_lenght = 'Enabled'
+ #           Relax_minimum_Password_length = 'Enabled'
             # 1.1.7 (L1) Ensure 'Store passwords using reversible encryption' is set to 'Disabled'
             Store_passwords_using_reversible_encryption = 'Disabled'
             # 1.2.1 (L1) Ensure 'Account lockout duration' is set to '15 or more minute(s)'
@@ -268,3 +268,9 @@ Configuration CIS_Windows11_v100 {
 
     }
 }
+
+#Create MOF
+CIS_Windows11_v100
+
+#Execute MOF
+Start-DscConfiguration -Path .\CIS_Windows11_v100
