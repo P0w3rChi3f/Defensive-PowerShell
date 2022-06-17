@@ -3,3 +3,6 @@ Set-Location "$env:USERPROFILE\Documents\Scripts\git-repos\Presentations\Defensi
 
 # Secure PowerShell walkthrough
 code .\Scripts\Start-SecurePowerShell.ps1
+
+# open Event Log PS1
+code .\Scripts\EventLog.ps1
