@@ -110,10 +110,10 @@ function Enable-PSScriptBlockLogging
 }
 
 # check to see if the registry was created
-Get-ChildItem HKLM:\SOFTWARE\Policies\Microsoft\Windows | select PSChildName
+Get-ChildItem HKLM:\SOFTWARE\Policies\Microsoft\Windows | Select-Object PSChildName
 
 # Check to see if there is a new logging provider
-Get-WinEvent -ListProvider * -ErrorAction SilentlyContinue | Where-Object {$_.name -like "*Powershell*"} | select Name
+Get-WinEvent -ListProvider * -ErrorAction SilentlyContinue | Where-Object {$_.name -like "*Powershell*"} | Select-Object Name
 
 # Enable Module Logging for all
 function Enable-ModuleLogging

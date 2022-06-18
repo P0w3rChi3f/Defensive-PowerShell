@@ -56,13 +56,38 @@ Get-WinEvent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4688} | Select-Obje
 
 get-winevent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4688} | Where-Object {($_.TimeCreated -gt '2019-03-18T15:00:00') -and ($_.TimeCreated -lt '2019-03-18T17:00:00')}
 
+# Filter xml  (show EventID=4624 or 4625) (appears not to work on saved files)
+$query = @'
+<QueryList>
+    <Query Id="0" Path="security">
+        <Select Path="security">
+            *[System[(EventID=4624)]] and
+            *[EventData[Data[@Name='LogonType'] and (Data='3')]]
+        </Select>
+    </Query>
+</QueryList>
+'@
+get-winevent -FilterXml $query | Measure-Object | Select-Object Count
 
+# Filter Xpath
+$xpath = "*[System[(EventID=4624)]] and *[EventData[Data[@Name='LogonType'] and (Data='10')]]"
+Get-WinEvent -path .\evtx\Merge.evtx -FilterXPath $xpath
+
+$notxpath = "*[System[(EventID=4624)]] and *[EventData[Data[@Name='LogonType'] and (Data!='3')]]"
+Get-WinEvent -path .\evtx\Merge.evtx -FilterXPath $notxpath | Measure-Object | select-object Count
+
+# Baseline query
+(get-winevent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4624} | Select-Object -ExpandProperty Message).split("`n") | Select-String -Pattern "Logon Type:" | Measure-Object | Select-Object Count
 
 <# Notes from DCI
 
 <QueryList>
         <Query Id="0" Path="Security">
-            <Select Path="Security">*[System[(EventID=4624)]] and *[EventData[Data[@Name='IpAddress'] and (Data='172.16.12.3')]] and *[EventData[Data[@Name='IpPort'] and (Data=56842 or Data=65499 or Data=65497 or Data=50726)]]</Select>
+            <Select Path="Security">
+                *[System[(EventID=4624)]] and 
+                *[EventData[Data[@Name='IpAddress'] and (Data='172.16.12.3')]] and 
+                *[EventData[Data[@Name='IpPort'] and (Data=56842 or Data=65499 or Data=65497 or Data=50726)]]
+            </Select>
         </Query>
     </QueryList>
 
