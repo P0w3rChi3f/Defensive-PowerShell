@@ -6,21 +6,21 @@ Enable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2R
 
 #######################################################################################
 # Transcript logging
-Set-Location C:\DefensivePowershell\Logs
+Set-Location C:\DefensivePowershell\transcripts
 Start-Transcript .\ps7transcript.txt
 Get-Service
 Stop-Transcript
 .\ps7transcript.txt
 
 test-path HKLM:\Software\Policies\Microsoft\Windows\PowerShell\Transcription\
-New-Item HKLM:\Software\Policies\Microsoft\Windows\PowerShell\Transcription\
+New-Item HKLM:\Software\Policies\Microsoft\Windows\PowerShell\Transcription\ -Force
 Set-ItemProperty HKLM:\Software\Policies\Microsoft\Windows\PowerShell\Transcription\ -Name EnableTranscripting -Type DWord -Value 1
 Set-ItemProperty HKLM:\Software\Policies\Microsoft\Windows\PowerShell\Transcription\ -Name OutputDirectory -Value "C:\DefensivePowershell\transcripts\"
 
 #######################################################################################
 # Scriptblock Logging
 # Check the registry key
-Get-childItem HKLM:\SOFTWARE\WOW6432Node\Policies\Microsoft\Windows\
+Get-childItem HKLM:\SOFTWARE\WOW6432Node\Policies\Microsoft\Windows\PowerShell
 
 # Check for PowerShell logs
 # Check to see if you are already logging
@@ -37,7 +37,8 @@ Get-Item HKLM:\SOFTWARE\WOW6432Node\Policies\Microsoft\Windows\PowerShell\Script
 
 # Restart shell
 Exit
-Enter-PSSession -session $remoteSession 
+Enter-PSSession -session $remoteSession
+Enter-PSSession -Session $pwsh7Remoting 
 
 # Opening PowerShell Creates Event ID 40961,40962,53504
 # Remote PowerShell Creates Event ID  53504 (PowerShell Named Pipe IPC)
@@ -47,8 +48,8 @@ Enter-PSSession -session $remoteSession
 
 # Enable module logging per module
 Install-Module SqlServer
-Import-Module SqlServer
-(Get-Module SqlServer).LogPipelineExecutionDetails = $true
+Import-Module WindowsUpdate
+(Get-Module WindowsUpdate).LogPipelineExecutionDetails = $true
 
 # Check module logging registry key
 
@@ -63,12 +64,14 @@ Set-ItemProperty HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShel
 
 
 # check module logging
-Get-WinEvent -LogName Microsoft-Windows-PowerShell/Operational | Where-Object {$_.id -eq 4103} 
+Get-WinEvent -LogName Microsoft-Windows-PowerShell/Operational | Where-Object {$_.id -eq 4103} | Select-Object -First 1 -ExpandProperty message
 
 #######################################################################################
 # Firewall logging
 Local Security Policy -> Windows Defender Firewall and Advanced Security 
 %systemroot%\system32\logfiles\firewall\pfirewall.log
+
+test-path $env:SystemRoot\system32\logfiles\firewall\pfirewall.log
 
 # Check to see if logging is enabled
 Get-NetFirewallProfile | Select-Object Name, LogAllowed, LogFileName
@@ -80,7 +83,7 @@ foreach ($fwProfile in (Get-NetFirewallProfile)) {set-NetFirewallProfile -Name $
 # Firewall Rules
 
 Get-NetFirewallRule | Select-Object -First 1
-Get-NetFirewallRule | Where-Object {$_.Enabled -eq $false} | Select-Object Name, Profile, Direction, Action
+Get-NetFirewallRule | Where-Object {($_.Enabled -eq $false) -and ($_.Profile -eq "Domain")} | Select-Object Name, Profile, Direction, Action
 Get-NetFirewallRule -Name *SpoolSvc* | Select-Object Name, Enabled, Profile, Direction, Action, Description | Format-Table -AutoSize -Wrap
 
 Set-NetFirewallRule -Name FPS-SpoolSvc-In-TCP -Enabled True

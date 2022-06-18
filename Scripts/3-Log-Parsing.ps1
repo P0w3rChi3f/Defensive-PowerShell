@@ -21,10 +21,13 @@ get-winevent -path .\evtx\Merge.evtx
 Get-WinEvent -path .\evtx\Merge.evtx
 
 # Explore Get-WinEvent basics and store as a variable
-$importLogs = foreach ($log in (get-childitem .\evtx\SingleLogs)){Get-WinEvent -path $log} #v5
+$importLogs = foreach ($log in (get-childitem .\evtx\SingleLogs)){Get-WinEvent -path $log.FullName} #v5
 
 $importLogs | Select-Object -First 1 
-$importLogs | Select-Object -First 1 | Select-Object -ExpandProperty message
+$importLogs | Select-Object -First 1 | Select-Object -ExpandProperty message | select-string -pattern "Logon ID:"
+
+$importLogs | Where-Object {$_.id -eq 4624} | Group-Object Id
+($importLogs | Where-Object {$_.id -eq 4624} | Select-Object -ExpandProperty message).split("`n") | select-string -pattern "Logon ID:"
 
 $importLogs | Where-Object {$_.id -eq "4672"} | Select-Object TaskDisplayName
 $importLogs | Where-Object {$_.TaskDisplayName -eq "Special Logon"} | select-object -ExpandProperty Message
@@ -41,6 +44,7 @@ $importLogs | Where-Object {$_.id -eq "4688"}
 
 Get-WinEvent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4688}
 
+##############################################################################################################
 $createdProcess = @()
 $processLogs = (Get-WinEvent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4688} | Select-Object -ExpandProperty message).split("`n") | Select-String -Pattern "New Process ID:" -Context (0,1)
 
@@ -51,10 +55,13 @@ foreach ($log in $processLogs){
          }
     $createdProcess += $processObject
 }
+#############################################################################################################
 
 Get-WinEvent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4688} | Select-Object @{name='TimeCreated';expression={(($_.TimeCreated).ToUniversalTime()).tostring("MM/dd/yyyy HH:mm:ss")}}, ID, LevelDisplayName, Message
 
 get-winevent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4688} | Where-Object {($_.TimeCreated -gt '2019-03-18T15:00:00') -and ($_.TimeCreated -lt '2019-03-18T17:00:00')}
+
+get-winevent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4688; StartTime='2019-03-18T15:00:00'; EndTime='2019-03-18T17:00:00'}
 
 # Filter xml  (show EventID=4624 or 4625) (appears not to work on saved files)
 $query = @'
@@ -62,12 +69,12 @@ $query = @'
     <Query Id="0" Path="security">
         <Select Path="security">
             *[System[(EventID=4624)]] and
-            *[EventData[Data[@Name='LogonType'] and (Data='3')]]
+            *[EventData[Data[@Name='LogonType'] and (Data!='2')]]
         </Select>
     </Query>
 </QueryList>
 '@
-get-winevent -FilterXml $query | Measure-Object | Select-Object Count
+(get-winevent -FilterXml $query | Select-Object -ExpandProperty Message).split("`n") | select-string -Pattern "Logon Type:" | Group-Object | Sort-Object Count
 
 # Filter Xpath
 $xpath = "*[System[(EventID=4624)]] and *[EventData[Data[@Name='LogonType'] and (Data='10')]]"
@@ -77,7 +84,7 @@ $notxpath = "*[System[(EventID=4624)]] and *[EventData[Data[@Name='LogonType'] a
 Get-WinEvent -path .\evtx\Merge.evtx -FilterXPath $notxpath | Measure-Object | select-object Count
 
 # Baseline query
-(get-winevent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4624} | Select-Object -ExpandProperty Message).split("`n") | Select-String -Pattern "Logon Type:" | Measure-Object | Select-Object Count
+(get-winevent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4624} | Select-Object -ExpandProperty Message).split("`n") | Select-String -Pattern "Logon Type:" | Group-Object | Sort-Object Count
 
 <# Notes from DCI
 
