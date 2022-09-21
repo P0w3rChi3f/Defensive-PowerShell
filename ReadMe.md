@@ -71,7 +71,8 @@ Clear logs in pwsh7
 Decode a base64 encoded command
     `$encodedText = (([string](Get-CimInstance Win32_Process | where {$_.processID -eq '6844'} | select Commandline)).split(" ")[-1]).TrimEnd("}"); [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($EncodedText))`
 
-
+Use a Vault with Passwords
+    How to use PowerShell with Hashicorp vault.
 
 ## Overview
 

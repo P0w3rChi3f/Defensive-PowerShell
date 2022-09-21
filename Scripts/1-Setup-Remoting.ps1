@@ -1,5 +1,5 @@
 # Create a Session Variable
-$remoteSession = New-PSSession -ComputerName vagrant-10 -Credential vagrant 
+$remoteSession = New-PSSession -ComputerName 192.168.254.133 -Credential vagrant 
 
 # Create Directory Structor and copy over evtx files
 Invoke-Command -Session $remoteSession -Command {$directories = "evtx", "transcripts", "logs"; new-item -ItemType Directory -path "c:\" -Name "DefensivePowershell" -Force; foreach ($name in $directories){new-item -ItemType Directory "c:\DefensivePowershell" -Name $name -force}}
@@ -19,8 +19,11 @@ Set-Location 'c:\Program Files\PowerShell\7'
 # from vm pwsh 7
 Enable-PSRemoting -SkipNetworkProfileCheck
 
+# Double Check your PSversion 
+Get-PSSessionConfiguration | Select-Object Name
+
 # From remote machine
-$pwsh7Remoting = New-PSSession vagrant-10 -Credential vagrant -ConfigurationName PowerShell.7.2.4
+$pwsh7Remoting = New-PSSession 192.168.254.133 -Credential vagrant -ConfigurationName PowerShell.7.2.6
 
 Enter-PSSession -Session $pwsh7Remoting
 
