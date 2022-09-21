@@ -65,6 +65,14 @@ Clear logs in pwsh7
         eventID 5140 : A network share was accessed
         EventID 4624 : Logged in users
 
+
+## Things to ADD
+
+Decode a base64 encoded command
+    `$encodedText = (([string](Get-CimInstance Win32_Process | where {$_.processID -eq '6844'} | select Commandline)).split(" ")[-1]).TrimEnd("}"); [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($EncodedText))`
+
+
+
 ## Overview
 
 This workshop touches on the difference between PowerShell versions.  It will detail how to use PowerShell to secure the systems, PowerShell remoting, and set up auditing.  During this section, the specific modules discussed are PowerShell DSC (Desired State Configuration) and PowerShell JEA (Just Enough Admin).  We will use PowerShell remoting to query system logs, query the registry, search for unwanted executables, and determine the type of file and if its executable.  The rest of the day, we will use PowerShell to investigate a system and hunt for evil.
