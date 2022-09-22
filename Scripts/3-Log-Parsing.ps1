@@ -14,7 +14,7 @@ Get-EventLog -List | Select-Object Log | Measure-Object
 Get-WinEvent -ListLog * | Select-Object logname | Measure-Object
 
 # Get the logs from exported logs PowerShell v5
-foreach ($log in (get-childitem .\evtx\SingleLogs)){Get-WinEvent -path .\evtx\SingleLogs\$log}
+foreach ($log in ((get-childitem .\evtx\SingleLogs).Name)){Get-WinEvent -path .\evtx\SingleLogs\$log}
 get-winevent -path .\evtx\Merge.evtx
 
 # Get the logs from exported logs PowerShell v7
