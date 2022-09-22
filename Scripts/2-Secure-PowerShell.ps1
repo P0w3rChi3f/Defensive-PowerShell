@@ -78,7 +78,39 @@ test-path $env:SystemRoot\system32\logfiles\firewall\pfirewall.log
 Get-NetFirewallProfile | Select-Object Name, LogAllowed, LogFileName
 Get-Content $env:SystemRoot\system32\LogFiles\Firewall\pfirewall.log
 
+# Enable firewall connection log
 foreach ($fwProfile in (Get-NetFirewallProfile)) {set-NetFirewallProfile -Name $fwProfile.Name -LogAllowed True -LogBlocked True -LogIgnored True}
+
+
+# Joshua Write Technique
+Get-Content $env:SystemRoot\system32\LogFiles\Firewall\pfirewall.log | ForEach-Object {$Columns = $_ -split ' '; $Columns[1]}
+
+# Create an object
+$Connection = @()
+
+(Get-Content $env:SystemRoot\system32\LogFiles\Firewall\pfirewall.log).split('`n') | Select-Object -Skip 4 | ForEach-Object {$record = [PSCustomObject]@{
+  Date = $_.split(' ')[0]
+  Time = $_.split(' ')[1]
+  action = $_.split(' ')[2]
+  protocol = $_.split(' ')[3]
+  src_ip = $_.split(' ')[4]
+  dst_ip = $_.split(' ')[5]
+  src_port = $_.split(' ')[6] 
+  dst_port = $_.split(' ')[7]
+  size = $_.split(' ')[8] 
+  tcpflags = $_.split(' ')[9] 
+  tcpsyn = $_.split(' ')[10] 
+  tcpack = $_.split(' ')[11]
+  tcpwin = $_.split(' ')[12] 
+  icmptype = $_.split(' ')[13] 
+  icmpcode = $_.split(' ')[14] 
+  info = $_.split(' ')[15] 
+  path = $_.split(' ')[16] 
+  pid = $_.split(' ')[17]
+    } 
+    $Connection += $Record
+  }
+
 
 #######################################################################################
 # Firewall Rules
