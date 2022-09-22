@@ -4,6 +4,8 @@ $remoteSession = New-PSSession -ComputerName 192.168.254.133 -Credential vagrant
 # Create Directory Structor and copy over evtx files
 Invoke-Command -Session $remoteSession -Command {$directories = "evtx", "transcripts", "logs"; new-item -ItemType Directory -path "c:\" -Name "DefensivePowershell" -Force; foreach ($name in $directories){new-item -ItemType Directory "c:\DefensivePowershell" -Name $name -force}}
 Copy-Item ".\Files\*" -Recurse "c:\DefensivePowershell\" -ToSession $remoteSession -Force
+Copy-Item ".\*" -Recurse "c:\DefensivePowershell\" -ToSession $remoteSession -Force
+
 
 # Enter PSSession into virtual machine
 Enter-PSSession -session $remoteSession 

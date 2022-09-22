@@ -24,9 +24,10 @@ Get-childItem HKLM:\SOFTWARE\WOW6432Node\Policies\Microsoft\Windows\PowerShell
 
 # Check for PowerShell logs
 # Check to see if you are already logging
-Get-WinEvent -LogName Microsoft-Windows-PowerShell/Operational  | Where-Object {($_.id -eq 4104)} | Select-Object -First 1 -ExpandProperty message 
+Get-WinEvent -LogName Microsoft-Windows-PowerShell/Operational  | Where-Object {($_.id -eq 4104)} | Select-Object -first 1 -ExpandProperty message 
 
-Get-WinEvent -LogName Microsoft-Windows-PowerShell/Operational | Group-Object id | out-file ".\Logs\CurrentLog#.txt"
+New-Item -ItemType Directory -Name Logs
+Get-WinEvent -LogName Microsoft-Windows-PowerShell/Operational | Group-Object id | out-file ".\Logs\CurrentLog#.txt" -Force
 
 # Create Scriptblock logging Registry key
 New-Item HKLM:\SOFTWARE\WOW6432Node\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging\ -Force
