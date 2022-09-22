@@ -1,3 +1,7 @@
+#######################################################################################
+# Disable PowerShell v2
+#######################################################################################
+
 # https://www.splunk.com/en_us/blog/security/hunting-for-malicious-powershell-using-script-block-logging.html
 # Working with PowerShellv2
 Get-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2
@@ -6,6 +10,7 @@ Enable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2R
 
 #######################################################################################
 # Transcript logging
+#######################################################################################
 Set-Location C:\DefensivePowershell\transcripts
 Start-Transcript .\ps7transcript.txt
 Get-Service
@@ -19,6 +24,8 @@ Set-ItemProperty HKLM:\Software\Policies\Microsoft\Windows\PowerShell\Transcript
 
 #######################################################################################
 # Scriptblock Logging
+#######################################################################################
+
 # Check the registry key
 Get-childItem HKLM:\SOFTWARE\WOW6432Node\Policies\Microsoft\Windows\PowerShell
 
@@ -46,6 +53,7 @@ Enter-PSSession -Session $pwsh7Remoting
 
 #######################################################################################
 # Module Logging
+#######################################################################################
 
 # Enable module logging per module
 Install-Module SqlServer
@@ -69,6 +77,8 @@ Get-WinEvent -LogName Microsoft-Windows-PowerShell/Operational | Where-Object {$
 
 #######################################################################################
 # Firewall logging
+#######################################################################################
+
 Local Security Policy -> Windows Defender Firewall and Advanced Security 
 %systemroot%\system32\logfiles\firewall\pfirewall.log
 
@@ -114,9 +124,10 @@ $Connection = @()
 
 #######################################################################################
 # Firewall Rules
+#######################################################################################
 
 Get-NetFirewallRule | Select-Object -First 1
-Get-NetFirewallRule | Where-Object {($_.Enabled -eq $false) -and ($_.Profile -eq "Domain")} | Select-Object Name, Profile, Direction, Action
+Get-NetFirewallRule | Where-Object {($_.Enabled -eq $true) -and ($_.Profile -eq "Domain")} | Select-Object Name, Profile, Direction, Action
 Get-NetFirewallRule -Name *SpoolSvc* | Select-Object Name, Enabled, Profile, Direction, Action, Description | Format-Table -AutoSize -Wrap
 
 Set-NetFirewallRule -Name FPS-SpoolSvc-In-TCP -Enabled True
