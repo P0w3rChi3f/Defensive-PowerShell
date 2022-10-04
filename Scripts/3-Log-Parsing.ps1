@@ -10,7 +10,7 @@ Set-Location c:\DefensivePowershell
 
 # Show the log differences between get-winevent and get-event log
 
-Get-EventLog -List | Select-Object Log | Measure-Object
+Get-EventLog -LogName * | Select-Object Log | Measure-Object
 Get-WinEvent -ListLog * | Select-Object logname | Measure-Object
 
 # Get the logs from exported logs PowerShell v5
@@ -27,7 +27,7 @@ $importLogs | Select-Object -First 1
 $importLogs | Select-Object -First 1 | Select-Object -ExpandProperty message | select-string -pattern "Logon ID:"
 
 $importLogs | Where-Object {$_.id -eq 4624} | Group-Object Id
-($importLogs | Where-Object {$_.id -eq 4624} | Select-Object -ExpandProperty message).split("`n") | select-string -pattern "Logon ID:"
+($importLogs | Where-Object {$_.id -eq 4624} | Select-Object -ExpandProperty message).split("`n") | select-string -pattern "Logon type:" 
 
 $importLogs | Where-Object {$_.id -eq "4672"} | Select-Object TaskDisplayName
 $importLogs | Where-Object {$_.TaskDisplayName -eq "Special Logon"} | select-object -ExpandProperty Message
@@ -38,7 +38,8 @@ $importLogs | Where-Object {$_.TaskDisplayName -eq "Special Logon"} | select-obj
 $importLogs | Where-Object {$_.message -like "*0x567515*"}
     # What IP did samir login from?
     # What was the name of their workstation?
-
+    ($importLogs | Where-Object {$_.message -like "*0x567515*" -and $_.id -eq 4624}| Select-Object -ExpandProperty Message).split("`n") | Select-String -Pattern "Network Information:" -Context (0,3)
+    
 $importLogs | Where-Object {$_.id -eq "4688"}
 ($importLogs | Where-Object {$_.id -eq "4688"} | Select-Object -ExpandProperty message).split("`n") | Select-String -patter "New Process ID:" -Context (0,1)
 
@@ -66,7 +67,7 @@ get-winevent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4688; StartTime='20
 # Filter xml  (show EventID=4624 or 4625) (appears not to work on saved files)
 $query = @'
 <QueryList>
-    <Query Id="0" Path="security">
+    <Query Id="0" Path=".\evtx\Merge.evtx">
         <Select Path="security">
             *[System[(EventID=4624)]] and
             *[EventData[Data[@Name='LogonType'] and (Data!='2')]]
@@ -77,7 +78,7 @@ $query = @'
 (get-winevent -FilterXml $query | Select-Object -ExpandProperty Message).split("`n") | select-string -Pattern "Logon Type:" | Group-Object | Sort-Object Count
 
 # Filter Xpath
-$xpath = "*[System[(EventID=4624)]] and *[EventData[Data[@Name='LogonType'] and (Data='10')]]"
+$xpath = "*[System[(EventID=4624)]] and *[EventData[Data[@Name='LogonType'] and (Data='3')]]"
 Get-WinEvent -path .\evtx\Merge.evtx -FilterXPath $xpath
 
 $notxpath = "*[System[(EventID=4624)]] and *[EventData[Data[@Name='LogonType'] and (Data!='3')]]"

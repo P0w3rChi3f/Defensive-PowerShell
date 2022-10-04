@@ -4,7 +4,7 @@
 
 # https://www.splunk.com/en_us/blog/security/hunting-for-malicious-powershell-using-script-block-logging.html
 # Working with PowerShellv2
-Get-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2
+Get-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2 | select DisplayName, Online
 Disable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2Root
 Enable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2Root
 
@@ -12,10 +12,10 @@ Enable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2R
 # Transcript logging
 #######################################################################################
 Set-Location C:\DefensivePowershell\transcripts
-Start-Transcript .\ps7transcript.txt
+Start-Transcript .\ps7transcript.txt -Append
 Get-Service
 Stop-Transcript
-.\ps7transcript.txt
+get-content .\ps7transcript.txt
 
 test-path HKLM:\Software\Policies\Microsoft\Windows\PowerShell\Transcription\
 New-Item HKLM:\Software\Policies\Microsoft\Windows\PowerShell\Transcription\ -Force
@@ -86,14 +86,24 @@ test-path $env:SystemRoot\system32\logfiles\firewall\pfirewall.log
 
 # Check to see if logging is enabled
 Get-NetFirewallProfile | Select-Object Name, LogAllowed, LogFileName
-Get-Content $env:SystemRoot\system32\LogFiles\Firewall\pfirewall.log
+Get-Content $env:SystemRoot\system32\LogFiles\Firewall\pfirewall.log -First 4
 
 # Enable firewall connection log
-foreach ($fwProfile in (Get-NetFirewallProfile)) {set-NetFirewallProfile -Name $fwProfile.Name -LogAllowed True -LogBlocked True -LogIgnored True}
+foreach ($fwProfile in (Get-NetFirewallProfile)) {set-NetFirewallProfile -Name $fwProfile.Name -LogAllowed False -LogBlocked False -LogIgnored False}
 
 
 # Joshua Write Technique
-Get-Content $env:SystemRoot\system32\LogFiles\Firewall\pfirewall.log | ForEach-Object {$Columns = $_ -split ' '; $Columns[1]}
+Get-Content $env:SystemRoot\system32\LogFiles\Firewall\pfirewall.log | ForEach-Object {$Columns = $_ -split ' '; $Columns[1]; $Columns[2]}
+
+Get-Content $env:SystemRoot\system32\LogFiles\Firewall\pfirewall.log | ForEach-Object {$Columns = $_ -split ' '; Write-Host -NoNewline $Columns[1]; write-host -nonewline " " ; Write-Host $Columns[2]}
+
+Get-Content $env:SystemRoot\system32\LogFiles\Firewall\pfirewall.log | ForEach-Object {$Columns = $_ -split ' '; $Columns[1,2,3]}
+
+Get-Content $env:SystemRoot\system32\LogFiles\Firewall\pfirewall.log | ForEach-Object {$Columns = $_ -split ' '; write-host $Columns[1] $Columns[2] $Columns[3] }
+
+@(Get-Content $env:SystemRoot\system32\LogFiles\Firewall\pfirewall.log) -like "*SEND*" | measure
+
+
 
 # Create an object
 $Connection = @()
@@ -132,6 +142,7 @@ Get-NetFirewallRule -Name *SpoolSvc* | Select-Object Name, Enabled, Profile, Dir
 
 Set-NetFirewallRule -Name FPS-SpoolSvc-In-TCP -Enabled True
 Disable-NetFirewallRule -Name FPS-SpoolSvc-In-TCP
+Get-NetFirewallRule -Name FPS-SpoolSvc-In-TCP | Select-Object Name, Enabled
 
 
 
