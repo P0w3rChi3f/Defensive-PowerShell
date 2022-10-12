@@ -77,3 +77,11 @@ Use a Vault with Passwords
 ## Overview
 
 This workshop touches on the difference between PowerShell versions.  It will detail how to use PowerShell to secure the systems, PowerShell remoting, and set up auditing.  During this section, the specific modules discussed are PowerShell DSC (Desired State Configuration) and PowerShell JEA (Just Enough Admin).  We will use PowerShell remoting to query system logs, query the registry, search for unwanted executables, and determine the type of file and if its executable.  The rest of the day, we will use PowerShell to investigate a system and hunt for evil.
+
+
+## Student Comments
+
+### BSidesKC 2022
+"This has been a great addition to the PowerShell crash course last year!!"
+"Great presenter, did well getting audience participation"
+"Thank you for your time."
