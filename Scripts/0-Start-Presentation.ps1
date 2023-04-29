@@ -1,5 +1,5 @@
 # Set my location on my machine
-Set-Location "$env:USERPROFILE\Documents\Scripts\git-repos\Presentations\Defensive PowerShell"
+Set-Location "$env:userprofile\Documents\Projects\Presentations\Defensive-PowerShell"
 
 # Set up PowerShell Remoting
 code .\Scripts\1-Setup-Remoting.ps1

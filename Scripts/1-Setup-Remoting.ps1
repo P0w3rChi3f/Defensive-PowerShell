@@ -1,5 +1,5 @@
 # Create a Session Variable
-$remoteSession = New-PSSession -ComputerName 192.168.254.133 -Credential (get-credential vagrant)
+$remoteSession = New-PSSession -ComputerName localhost -Credential (get-credential vagrant)
 Enter-PSSession -Session $remoteSession
 
 # Create Directory Structor and copy over evtx files

@@ -84,3 +84,6 @@ This workshop touches on the difference between PowerShell versions.  It will de
 "This has been a great addition to the PowerShell crash course last year!!"
 "Great presenter, did well getting audience participation"
 "Thank you for your time."
+
+
+get-nettcPConnection | Where-Object {$_.state -eq "Listen" -or $_.state -eq "Established"} | select LocalAddress, LocalPort, RemoteAddress, RemotePort, state, @{name="ProcessID"; expression={($_.OwningProcess)}} ,@{name="Process"; expression={($_.OwningProcess | foreach {get-process -id $_}).ProcessName}}, @{name="UserName"; expression={$_.OwningProcess | foreach {get-process -id $_ -IncludeUserName | Select -ExpandProperty UserName}}}
