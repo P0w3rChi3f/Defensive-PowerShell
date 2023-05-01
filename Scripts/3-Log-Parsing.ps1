@@ -70,7 +70,7 @@ $query = @'
     <Query Id="0" Path=".\evtx\Merge.evtx">
         <Select Path="security">
             *[System[(EventID=4624)]] and
-            *[EventData[Data[@Name='LogonType'] and (Data!='2')]]
+            *[EventData[Data[@Name='LogonType'] and (Data !='2')]]
         </Select>
     </Query>
 </QueryList>
