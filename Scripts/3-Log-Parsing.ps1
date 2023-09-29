@@ -73,7 +73,7 @@ Get-NetFirewallProfile | Select-Object Name, LogAllowed, LogFileName
 Get-Content $env:SystemRoot\system32\LogFiles\Firewall\pfirewall.log -First 4
 
 # Enable firewall connection log
-foreach ($fwProfile in (Get-NetFirewallProfile)) {set-NetFirewallProfile -Name $fwProfile.Name -LogAllowed False -LogBlocked False -LogIgnored False}
+foreach ($fwProfile in (Get-NetFirewallProfile)) {set-NetFirewallProfile -Name $fwProfile.Name -LogAllowed True -LogBlocked True -LogIgnored True}
 
 
 # Joshua Write Technique
