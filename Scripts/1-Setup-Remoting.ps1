@@ -1,3 +1,5 @@
+#Add Local administrator account to use for class.
+
 # Create a Session Variable
 $remoteSession = New-PSSession -ComputerName localhost -Credential (get-credential vagrant)
 Enter-PSSession -Session $remoteSession

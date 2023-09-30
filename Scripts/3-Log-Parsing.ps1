@@ -61,9 +61,9 @@ foreach ($log in $processLogs){
 
 Get-WinEvent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4688} | Select-Object @{name='TimeCreated';expression={(($_.TimeCreated).ToUniversalTime()).tostring("MM/dd/yyyy HH:mm:ss")}}, ID, LevelDisplayName, Message
 
-get-winevent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4688} | Where-Object {($_.TimeCreated -gt '2019-03-18T15:00:00') -and ($_.TimeCreated -lt '2019-03-18T17:00:00')}
+get-winevent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4688} | Where-Object {($_.TimeCreated -gt '2019-03-18T15:00:00') -and ($_.TimeCreated -lt '2019-03-18T23:00:00')}
 
-get-winevent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4688; StartTime='2019-03-18T15:00:00'; EndTime='2019-03-18T17:00:00'}
+get-winevent -FilterHashTable @{path='.\evtx\Merge.evtx'; ID=4688; StartTime='2019-03-18T15:00:00'; EndTime='2019-03-18T23:00:00'}
 
 #######################################################################################
 # Filter xml  (show EventID=4624 or 4625) (appears not to work on saved files)
