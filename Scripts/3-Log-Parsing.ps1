@@ -148,7 +148,7 @@ $Connection = @()
     $Connection += $Record
   }
 
-
+get-fconnections
 
 
 
